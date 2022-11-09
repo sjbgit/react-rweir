@@ -43,9 +43,11 @@ const useStorageState = (key, initialState) => {
 const App = () => {
 
   useEffect(() => {
+    setIsLoading(true)
     getAsyncStories().then(result => {
       setStories(result.data.stories)
-    })
+      setIsLoading(false)
+    }).catch(() => setIsError(true));
   }, []);
 
   const [searchTerm, setSearchTerm] = useStorageState(
@@ -53,7 +55,9 @@ const App = () => {
     'React'
   );
 
+  const [isLoading, setIsLoading] = useState(false);
   const [stories, setStories] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const handleRemoveStory = (item) => {
     const newStories = stories.filter(
@@ -74,7 +78,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>My Hacker Stories</h1>
+      <h1>My Hacker Stories</h1>      
 
       <InputWithLabel
         id="search"
@@ -87,8 +91,15 @@ const App = () => {
       </InputWithLabel>
 
       <hr />
-
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} /> 
+      {isError && <p>Something went wrong ...</p>}
+      {isLoading ? (
+        <p>Loading ...</p>
+      ) : (
+        <List
+          list={searchedStories}
+          onRemoveItem={handleRemoveStory}
+        />
+      )}
     </div>
   );
 }
