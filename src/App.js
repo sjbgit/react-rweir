@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useEffect, useRef  } from "react";
 
 const initialStories = [
   {
@@ -20,11 +20,11 @@ const initialStories = [
 ];
 
 const useStorageState = (key, initialState) => {
-  const [value, setValue] = React.useState(
+  const [value, setValue] = useState(
     localStorage.getItem(key) || initialState
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem(key, value);
   }, [value, key]);
 
@@ -32,12 +32,13 @@ const useStorageState = (key, initialState) => {
 };
 
 const App = () => {
+
   const [searchTerm, setSearchTerm] = useStorageState(
     'search',
     'React'
   );
 
-  const [stories, setStories] = React.useState(initialStories);
+  const [stories, setStories] = useState(initialStories);
 
   const handleRemoveStory = (item) => {
     const newStories = stories.filter(
@@ -52,8 +53,9 @@ const App = () => {
   };
 
   const searchedStories = stories.filter((story) =>
-    story.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  {
+    return story.title.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   return (
     <div>
@@ -61,6 +63,7 @@ const App = () => {
 
       <InputWithLabel
         id="search"
+        
         value={searchTerm}
         isFocused
         onInputChange={handleSearch}
@@ -70,10 +73,10 @@ const App = () => {
 
       <hr />
 
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} /> 
     </div>
   );
-};
+}
 
 const InputWithLabel = ({
   id,
@@ -83,9 +86,9 @@ const InputWithLabel = ({
   isFocused,
   children,
 }) => {
-  const inputRef = React.useRef();
+  const inputRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isFocused && inputRef.current) {
       inputRef.current.focus();
     }
@@ -134,7 +137,7 @@ const Item = ({ item, onRemoveItem }) => (
   </li>
 );
 
-export default App;
+export default App
 
 
 // // import './App.css';
