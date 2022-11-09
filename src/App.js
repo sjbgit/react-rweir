@@ -32,7 +32,7 @@ const App = () => {
       points: 5,
       objectID: 1,
     },
-  ];
+  ];  
 
   const [searchTerm, setSearchTerm] = useStorageState('search', 'React');
 
