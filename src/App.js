@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef  } from "react";
+import { useState, useEffect, useRef, useReducer  } from "react";
 
 const initialStories = [
   {
@@ -28,6 +28,18 @@ const getAsyncStories = () =>
     //resolve({ data: { stories: initialStories } })
   );
 
+const storiesReducer = (state, action) => {
+  if (action.type === 'SET_STORIES') {
+    return action.payload
+  }
+  else if (action.type === 'REMOVE_STORY') {
+    return state.filter((story) => action.payload.objectID !== story.objectID);
+  }
+  else {
+    throw new Error(); 
+  }
+}
+
 const useStorageState = (key, initialState) => {
   const [value, setValue] = useState(
     localStorage.getItem(key) || initialState
@@ -45,7 +57,8 @@ const App = () => {
   useEffect(() => {
     setIsLoading(true)
     getAsyncStories().then(result => {
-      setStories(result.data.stories)
+      //setStories(result.data.stories)
+      dispatchStories({ type: 'SET_STORIES', payload: result.data.stories})
       setIsLoading(false)
     }).catch(() => setIsError(true));
   }, []);
@@ -56,15 +69,16 @@ const App = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const [stories, setStories] = useState([]);
+  const [stories, dispatchStories] = useReducer(storiesReducer, []);
   const [isError, setIsError] = useState(false);
 
   const handleRemoveStory = (item) => {
-    const newStories = stories.filter(
-      (story) => item.objectID !== story.objectID
-    );
-
-    setStories(newStories);
+    dispatchStories({ type: 'REMOVE_STORY', payload: item})
+    // const newStories = stories.filter(
+    //   (story) => item.objectID !== story.objectID
+    // );
+    // dispatchStories({ type: 'SET_STORIES', newStories})
+    // //setStories(newStories);
   };
 
   const handleSearch = (event) => {
