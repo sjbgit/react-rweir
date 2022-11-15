@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useReducer  } from "react";
 
+const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
+
 const initialStories = [
   {
     title: 'React',
@@ -88,15 +90,27 @@ const App = () => {
   useEffect(() => {
     //setIsLoading(true)
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
-    getAsyncStories().then(result => {
-      //setStories(result.data.stories)
-      //dispatchStories({ type: 'SET_STORIES', payload: result.data.stories})
-      dispatchStories({
+    fetch(`${API_ENDPOINT}react`)
+    .then((response) => response.json())
+    .then((result) => 
+    { 
+      console.log(result);
+        dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
-        payload: result.data.stories,
+        payload: result.hits,
       });
-      //setIsLoading(false)
-    }).catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  }) //setIsError(true));
+    })
+    .catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  })
+
+    // getAsyncStories().then(result => {
+    //   //setStories(result.data.stories)
+    //   //dispatchStories({ type: 'SET_STORIES', payload: result.data.stories})
+    //   dispatchStories({
+    //     type: 'STORIES_FETCH_SUCCESS',
+    //     payload: result.data.stories,
+    //   });
+    //   //setIsLoading(false)
+    // }).catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  }) //setIsError(true));
   }, []);
 
   const [searchTerm, setSearchTerm] = useStorageState(
