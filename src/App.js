@@ -87,10 +87,17 @@ const useStorageState = (key, initialState) => {
 
 const App = () => {
 
+  const [searchTerm, setSearchTerm] = useStorageState(
+    'search',
+    'React'
+  );
+
   useEffect(() => {
+
+    if (!searchTerm) return
     //setIsLoading(true)
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
-    fetch(`${API_ENDPOINT}react`)
+    fetch(`${API_ENDPOINT}${searchTerm}`)
     .then((response) => response.json())
     .then((result) => 
     { 
@@ -111,12 +118,13 @@ const App = () => {
     //   });
     //   //setIsLoading(false)
     // }).catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  }) //setIsError(true));
-  }, []);
+  }, [searchTerm]);
 
-  const [searchTerm, setSearchTerm] = useStorageState(
-    'search',
-    'React'
-  );
+ 
+
+  // useEffect(() => {
+
+  // }, [searchTerm])
 
   //const [isLoading, setIsLoading] = useState(false);
   const [stories, dispatchStories] = useReducer(storiesReducer, { data: [], isLoading: false, isError: false } );
@@ -135,10 +143,10 @@ const App = () => {
     setSearchTerm(event.target.value);
   };
 
-  const searchedStories = stories.data.filter((story) =>
-  {
-    return story.title.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  // const searchedStories = stories.data.filter((story) =>
+  // {
+  //   return story.title.toLowerCase().includes(searchTerm.toLowerCase());
+  // });
 
   return (
     <div>
@@ -161,7 +169,7 @@ const App = () => {
         <p>Loading ...</p>
       ) : (
         <List
-          list={searchedStories}
+          list={stories.data}
           onRemoveItem={handleRemoveStory}
         />
       )}
