@@ -59,21 +59,23 @@ const App = () => {
     `${API_ENDPOINT}${searchTerm}`
   );
 
-  const handleFetchStories = useCallback(() => {    
+  const handleFetchStories = useCallback(async () => {    
     
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
     
-    axios
-    .get(url)
-    .then((result) => 
-    { 
+    try {
+      const result = await axios.get(url)
+
       console.log(result);
-        dispatchStories({
+      dispatchStories({
         type: 'STORIES_FETCH_SUCCESS',
         payload: result.data.hits,
       });
-    })
-    .catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  })
+
+    } catch(error) {
+      console.log(error)
+      dispatchStories({ type: 'STORIES_FETCH_FAILURE' })
+    }
   }, [url]);
 
   useEffect(() => {
