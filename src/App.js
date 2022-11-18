@@ -2,34 +2,34 @@ import { useState, useEffect, useRef, useReducer  } from "react";
 
 const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 
-const initialStories = [
-  {
-    title: 'React',
-    url: 'https://reactjs.org/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://redux.js.org/',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
+// const initialStories = [
+//   {
+//     title: 'React',
+//     url: 'https://reactjs.org/',
+//     author: 'Jordan Walke',
+//     num_comments: 3,
+//     points: 4,
+//     objectID: 0,
+//   },
+//   {
+//     title: 'Redux',
+//     url: 'https://redux.js.org/',
+//     author: 'Dan Abramov, Andrew Clark',
+//     num_comments: 2,
+//     points: 5,
+//     objectID: 1,
+//   },
+// ];
 
-const getAsyncStories = () =>
-  new Promise((resolve, reject) => {
-    //setTimeout(reject, 2000);
-    setTimeout(
-      () => resolve({ data: { stories: initialStories } }),
-      2000
-    )
-    //resolve({ data: { stories: initialStories } })
-  });
+// const getAsyncStories = () =>
+//   new Promise((resolve, reject) => {
+//     //setTimeout(reject, 2000);
+//     setTimeout(
+//       () => resolve({ data: { stories: initialStories } }),
+//       2000
+//     )
+//     //resolve({ data: { stories: initialStories } })
+//   });
 
 const storiesReducer = (state, action) => {
   switch (action.type) {
@@ -95,7 +95,7 @@ const App = () => {
   useEffect(() => {
 
     if (!searchTerm) return
-    //setIsLoading(true)
+    
     dispatchStories({ type: 'STORIES_FETCH_INIT' });
     fetch(`${API_ENDPOINT}${searchTerm}`)
     .then((response) => response.json())
@@ -108,17 +108,35 @@ const App = () => {
       });
     })
     .catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  })
-
-    // getAsyncStories().then(result => {
-    //   //setStories(result.data.stories)
-    //   //dispatchStories({ type: 'SET_STORIES', payload: result.data.stories})
-    //   dispatchStories({
-    //     type: 'STORIES_FETCH_SUCCESS',
-    //     payload: result.data.stories,
-    //   });
-    //   //setIsLoading(false)
-    // }).catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  }) //setIsError(true));
   }, [searchTerm]);
+
+  // useEffect(() => {
+
+  //   if (!searchTerm) return
+  //   //setIsLoading(true)
+  //   dispatchStories({ type: 'STORIES_FETCH_INIT' });
+  //   fetch(`${API_ENDPOINT}${searchTerm}`)
+  //   .then((response) => response.json())
+  //   .then((result) => 
+  //   { 
+  //     console.log(result);
+  //       dispatchStories({
+  //       type: 'STORIES_FETCH_SUCCESS',
+  //       payload: result.hits,
+  //     });
+  //   })
+  //   .catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  })
+
+  //   // getAsyncStories().then(result => {
+  //   //   //setStories(result.data.stories)
+  //   //   //dispatchStories({ type: 'SET_STORIES', payload: result.data.stories})
+  //   //   dispatchStories({
+  //   //     type: 'STORIES_FETCH_SUCCESS',
+  //   //     payload: result.data.stories,
+  //   //   });
+  //   //   //setIsLoading(false)
+  //   // }).catch(() =>{ dispatchStories({ type: 'STORIES_FETCH_FAILURE' })  }) //setIsError(true));
+  // }, [searchTerm]);
 
  
 
